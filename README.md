@@ -25,6 +25,10 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 
 If you pick `Tymon JWTAuth` as your jwt solution in your project, when you try to refresh your token, the package will blacklist your exchanged token (assume your blacklist feature is enabled). So when your client faces a concurrency use case,  your request might be rejected because that request is sent before your app renews jwt token returned by server. This package caches the refreshed jwt token in a short period to ensure your client side can get correct response even if your request carries an old token in a concurrency case.
 
+### Registering User
+// This will attempt to resgister the user using the credentials passed and returns a JWT Auth Token for subsequent requests.
+
+
 ### Attempt To Authenticate And Return Token
 
 ``` php
@@ -34,7 +38,7 @@ $token = Auth::attempt(['email' => 'guru@gmail.com', 'password' => 'guru4321']);
 ### Authenticate Once By Credentials
 
 ``` php
-if(Auth::once(['email' => 'user@domain.com', 'password' => '123456'])) {
+if(Auth::once(['email' => 'guru@gmail.com', 'password' => 'guru4321'])) {
     // Do something with the authenticated user
 }
 ```
@@ -42,7 +46,7 @@ if(Auth::once(['email' => 'user@domain.com', 'password' => '123456'])) {
 ### Validate Credentials
 
 ``` php
-if(Auth::validate(['email' => 'user@domain.com', 'password' => '123456'])) {
+if(Auth::validate(['email' => 'guru@gmail.com', 'password' => 'guru4321'])) {
     // Credentials are valid
 }
 ```
