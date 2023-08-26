@@ -21,46 +21,66 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## Approach
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+If you pick `Tymon JWTAuth` as your jwt solution in your project, when you try to refresh your token, the package will blacklist your exchanged token (assume your blacklist feature is enabled). So when your client faces a concurrency use case,  your request might be rejected because that request is sent before your app renews jwt token returned by server. This package caches the refreshed jwt token in a short period to ensure your client side can get correct response even if your request carries an old token in a concurrency case.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Registering User
+// This will attempt to resgister the user using the credentials passed and returns a JWT Auth Token for subsequent requests.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+### Attempt To Authenticate And Return Token
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+``` php
+// This will attempt to authenticate the user using the credentials passed and returns a JWT Auth Token for subsequent requests.
+$token = Auth::attempt(['email' => 'guru@gmail.com', 'password' => 'guru4321']);
 
-### Premium Partners
+### Authenticate Once By Credentials
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+``` php
+if(Auth::once(['email' => 'guru@gmail.com', 'password' => 'guru4321'])) {
+    // Do something with the authenticated user
+}
+```
 
-## Contributing
+### Validate Credentials
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+``` php
+if(Auth::validate(['email' => 'guru@gmail.com', 'password' => 'guru4321'])) {
+    // Credentials are valid
+}
+```
 
-## Code of Conduct
+### Check User is Authenticated
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+``` php
+if(Auth::check()) {
+    // User is authenticated
+}
+```
 
-## Security Vulnerabilities
+### Logout Authenticated User
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+``` php
+Auth::logout(); // This will invalidate the current token and unset user/token values.
 
-## License
+### Refresh Expired Token
+
+Though it's recommended you refresh using the middlewares provided with the package,
+but if you'd like, You can also do it manually with this method.
+
+Refresh expired token passed in request:
+
+``` php
+$token = Auth::refresh();
+```
+
+Refresh passed expired token:
+
+``` php
+Auth::setToken('ExpiredToken')->refresh();
+```
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
