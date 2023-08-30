@@ -13,6 +13,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('user_details', 'user_details');
     Route::post('reset_password_email', 'send_reset_password_email');
     Route::post('change-password', 'passwordResetProcess');
+    Route::post('contact_us', 'contact_us');
 });
 
 Route::controller(TodoController::class)->group(function () {

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Mail\SendMail;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Mail\SendAlertMail;
+use App\SendAlertMail\SendAlertMail as SendAlertMailSendAlertMail;
 
 class AuthController extends Controller
 {
@@ -173,4 +175,21 @@ class AuthController extends Controller
           'data'=>'Password has been updated.'
         ],Response::HTTP_CREATED);
     }    
+
+    public function contact_us(Request $request){
+        $name=$request->name;
+        $email=$request->email;
+        $subject=$request->subject;
+        if(!$this->validEmail($request->email)) {
+            return response()->json([
+                'message' => 'Email does not exist.'
+            ], Response::HTTP_NOT_FOUND);
+        } else {
+            // If email exists
+            Mail::to($request->email)->send(new SendAlertMail($email,$name,$subject));
+            return response()->json([
+                'message' => 'Your Query has been sent.Please wait until we get back to you...'
+            ], Response::HTTP_OK);            
+        }
+    }
 }
